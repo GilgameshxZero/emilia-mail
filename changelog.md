@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.4
+
+Carry over changes to makefile from `emilia-web`.
+
+## 2.0.3
+
+Change makefile to recompile when `rain` headers change.
+
 ## 2.0.2
 
 Use header-only `rain`, and property pages provided by `rain`.

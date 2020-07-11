@@ -1,5 +1,3 @@
-#include "rain/rain.hpp"
-
 #include "emilia-mail.hpp"
 
 int main() {
@@ -10,6 +8,6 @@ int main() {
 						<< RAIN_VERSION_REVISION << "."
 						<< RAIN_VERSION_BUILD << "." << std::endl;
 	std::cout << "This binary was built on "
-						<< Rain::getPlatformString() << "." << std::endl;
+						<< Rain::Platform::getPlatformString() << "." << std::endl;
 	return 0;
 }
