@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.5
+
+* Add `-lstdc++fs` flag to compilation options.
+* Update `.clang-format`.
+
 ## 2.0.4
 
 Carry over changes to makefile from `emilia-web`.
