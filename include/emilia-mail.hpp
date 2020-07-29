@@ -2,10 +2,10 @@
 
 #define EMILIA_MAIL_VERSION_MAJOR 2
 #define EMILIA_MAIL_VERSION_MINOR 0
-#define EMILIA_MAIL_VERSION_REVISION 5
+#define EMILIA_MAIL_VERSION_REVISION 6
+
+#include "build.hpp"
 
 #include <rain.hpp>
 
-#include <iostream>
-
-int main();
+int main(int, const char *[]);

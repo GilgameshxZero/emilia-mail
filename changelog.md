@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.6
+
+* Makefile now recompiles when any of the `rain` header changes.
+* Add command-line parsing.
+
 ## 2.0.5
 
 * Add `-lstdc++fs` flag to compilation options.
