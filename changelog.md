@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+* Finish implementing very basic "relay" SMTP server.
+
 ## 2.0.6
 
 * Makefile now recompiles when any of the `rain` header changes.
