@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1
+
+* Shorten default timeouts.
+
 ## 2.1.0
 
 * Finish implementing very basic "relay" SMTP server.

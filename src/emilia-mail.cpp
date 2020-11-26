@@ -41,8 +41,6 @@ int main(int argc, const char *argv[]) {
 	std::mutex coutMtx;
 	typedef Rain::Networking::Smtp::Server<ServerSlaveData> Server;
 	Server server(512);
-	server.acceptTimeoutMs = 30000;
-	server.recvTimeoutMs = 30000;
 	server.onBeginSlaveTask = [&](Server::Slave *slave) {
 		Rain::Networking::Smtp::Response res(220, "emilia ready");
 		slave->send(&res);
