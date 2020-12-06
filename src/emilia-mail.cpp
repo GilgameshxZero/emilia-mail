@@ -99,6 +99,8 @@ int main(int argc, const char *argv[]) {
 					req->slave->send(&res);
 					return;
 				}
+				std::lock_guard<std::mutex> coutLck(coutMtx);
+				std::cout << std::string(req->slave->data.buffer, recvLen);
 				req->slave->data.data.append(req->slave->data.buffer, recvLen);
 			} while (Rain::Algorithm::cStrSearchKMP(req->slave->data.buffer,
 								 recvLen,
@@ -231,8 +233,8 @@ int main(int argc, const char *argv[]) {
 					 *rightBracket != '\0' && *rightBracket != '>';
 					 rightBracket++)
 				;
-			req->slave->data.mailFrom.assign(
-				leftBracket + 1, rightBracket - leftBracket - 1);
+			Rain::String::toLowerStr(&req->slave->data.mailFrom.assign(
+				leftBracket + 1, rightBracket - leftBracket - 1));
 
 			// Verify authentication if sending from managed domain.
 			if (domainsSet.find(req->slave->data.mailFrom) != domainsSet.end() &&
@@ -254,8 +256,8 @@ int main(int argc, const char *argv[]) {
 					 *rightBracket != '\0' && *rightBracket != '>';
 					 rightBracket++)
 				;
-			req->slave->data.rcptTo.insert(
-				std::string(leftBracket + 1, rightBracket - leftBracket - 1));
+			std::string address(leftBracket + 1, rightBracket - leftBracket - 1);
+			req->slave->data.rcptTo.insert(*Rain::String::toLowerStr(&address));
 			res.code = 250;
 			res.parameter = "OK";
 			req->slave->send(&res);

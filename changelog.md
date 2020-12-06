@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2
+
+* Ignore case in email/domain matching.
+
 ## 2.1.1
 
 * Shorten default timeouts.
