@@ -40,10 +40,18 @@ endif
 
 # Mark .PHONY for rules to avoid compiling files named the same as rules.
 
-# Compile and run all tests.
+# Compile without running.
 .PHONY: $(BIN_NAME)
 $(BIN_NAME): $(VERSION_BUILD_INCLUDE) $(EMILIA_MAIL_BIN)
-	./$(EMILIA_MAIL_BIN)
+
+# Compile and run.
+.PHONY: run
+run: $(VERSION_BUILD_INCLUDE) $(EMILIA_MAIL_BIN)
+	./$(EMILIA_MAIL_BIN) $(ARGS)
+
+# Compile with incrementing build nor running.
+.PHONY: no-inc
+noinc: $(VERSION_BUILD_INCLUDE) $(EMILIA_MAIL_BIN)
 
 # Rules for emilia-mail binaries and objects.
 $(BIN_DIR)%: $(OBJ_DIR)$(BIN_NAME)/%.o $(EMILIA_MAIL_OBJ)

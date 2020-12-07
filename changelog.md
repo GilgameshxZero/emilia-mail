@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.3
+
+* Update to the RAII implementation of `Rain::Socket`.
+* Use WSL instead of Cygwin for Windows command line builds.
+* Add `make run` and `make no-inc` build commands.
+
 ## 2.1.2
 
 * Ignore case in email/domain matching.

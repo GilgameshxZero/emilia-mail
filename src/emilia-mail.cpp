@@ -39,19 +39,20 @@ int main(int argc, const char *argv[]) {
 
 	// Run server.
 	std::mutex coutMtx;
+	std::atomic<std::size_t> cSlaves;
 	typedef Rain::Networking::Smtp::Server<ServerSlaveData> Server;
 	Server server(512);
 	server.onBeginSlaveTask = [&](Server::Slave *slave) {
 		Rain::Networking::Smtp::Response res(220, "emilia ready");
 		slave->send(&res);
+		std::lock_guard<std::mutex> coutLck(coutMtx);
+		std::cout << "Began new slave task: " << ++cSlaves << "\n";
+	};
+	server.onCloseSlave = [&](Server::Slave *slave) {
+		std::lock_guard<std::mutex> coutLck(coutMtx);
+		std::cout << "Ended slave task: " << --cSlaves << "\n";
 	};
 	server.onRequest = [&](Server::Request *req) {
-		{
-			std::lock_guard<std::mutex> coutLck(coutMtx);
-			std::cout << "[" << req->slave->getNativeSocket() << "] " << req->verb
-								<< " " << req->parameter << "\n";
-		}
-
 		Server::Response res(req->slave);
 		if (req->verb == "EHLO" || req->verb == "HELO") {
 			res.code = 250;
@@ -99,8 +100,6 @@ int main(int argc, const char *argv[]) {
 					req->slave->send(&res);
 					return;
 				}
-				std::lock_guard<std::mutex> coutLck(coutMtx);
-				std::cout << std::string(req->slave->data.buffer, recvLen);
 				req->slave->data.data.append(req->slave->data.buffer, recvLen);
 			} while (Rain::Algorithm::cStrSearchKMP(req->slave->data.buffer,
 								 recvLen,
@@ -148,6 +147,8 @@ int main(int argc, const char *argv[]) {
 				res.code = 554;
 				res.parameter = "emilia failed to relay email data";
 				req->slave->send(&res);
+				std::lock_guard<std::mutex> coutLck(coutMtx);
+				std::cout << req->slave->data.data;
 			} else {
 				res.code = 250;
 				res.parameter = "OK";
@@ -173,7 +174,7 @@ int main(int argc, const char *argv[]) {
 					res.code = 500;
 					res.parameter = "unsupported format";
 					req->slave->send(&res);
-					req->slave->close();
+					req->slave->shutdown();
 					return;
 				}
 				usernameB64.append(req->slave->data.buffer, recvLen);
@@ -200,7 +201,7 @@ int main(int argc, const char *argv[]) {
 					res.code = 500;
 					res.parameter = "unsupported format";
 					req->slave->send(&res);
-					req->slave->close();
+					req->slave->shutdown();
 					return;
 				}
 				passwordB64.append(req->slave->data.buffer, recvLen);
@@ -282,8 +283,6 @@ int main(int argc, const char *argv[]) {
 	while (command != "exit") {
 		std::cin >> command;
 	}
-	server.close();
-	Rain::Networking::Socket::cleanup();
 
 	return 0;
 }
