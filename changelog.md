@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.1
+
+* Return `450` temporary failure codes instead of permanent `554`s.
+* Saves failed emails to a file on disk.
+* Update `noinc` make command.
+
 ## 2.2.0
 
 * Update to yet another RAII implementation of the underlying `Socket`, and rework inheritance model to match.

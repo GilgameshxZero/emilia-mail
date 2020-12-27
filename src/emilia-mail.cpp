@@ -107,13 +107,19 @@ void Server::onRequest(Request *req) {
 		}
 
 		if (someFailed) {
-			res.code = 554;
-			res.parameter = "emilia failed to relay email data";
+			res.code = 450;
+			res.parameter = "emilia failed to relay email data, please try again";
 			req->slave->send(&res);
+
+			std::string filename = std::to_string(std::chrono::steady_clock::now().time_since_epoch().count());
+			std::ofstream out(filename, std::ios::binary);
+			out.write(req->slave->data.data.c_str(), req->slave->data.data.length());
+			out.close();
+
 			std::lock_guard<std::mutex> coutLck(coutMtx);
 			std::cout << "[" << req->slave->getNativeSocket()
-								<< "] Failed to relay email. Data below.\n"
-								<< req->slave->data.data;
+								<< "] Failed to relay email. Data saved to " << filename
+								<< "\n";
 		} else {
 			res.code = 250;
 			res.parameter = "OK";
