@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.0
+
+* Update to yet another RAII implementation of the underlying `Socket`, and rework inheritance model to match.
+* Less verbose logging—focusing mainly on failed email relays.
+* Fix `MacOS` builds.
+
 ## 2.1.3
 
 * Update to the RAII implementation of `Rain::Socket`.
