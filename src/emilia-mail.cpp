@@ -104,7 +104,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 					std::lock_guard<std::mutex> coutLck(coutMtx);
 					std::cout << "[" << slave.getNativeSocket()
 										<< "] Failed to connect to SMTP server at " << domain
-										<< " with error code " << result << "\n";
+										<< " with error code " << result << ".\n";
 					someFailed = true;
 				} else if ((result = client.sendEmail(
 											domains[0], slave.mailFrom, to, slave.data))) {
@@ -112,7 +112,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 					std::cout << "[" << slave.getNativeSocket()
 										<< "] Failed to send email from " << slave.mailFrom
 										<< " to " << to << " originally intended for " << it
-										<< " with error code " << result << "\n";
+										<< " with error code " << result << ".\n";
 					someFailed = true;
 				}
 			}
@@ -123,7 +123,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 				slave.send(res);
 
 				std::string filename = std::to_string(
-					std::chrono::steady_clock::now().time_since_epoch().count());
+					std::chrono::steady_clock::now().time_since_epoch().count()) + ".txt";
 				std::ofstream out(filename, std::ios::binary);
 				out.write(slave.data.c_str(), slave.data.length());
 				out.close();
@@ -157,7 +157,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 					res.code = 500;
 					res.parameter = "unsupported format";
 					slave.send(res);
-					return true;
+					return false;
 				}
 				usernameB64.append(slave.buf, recvLen);
 			} while (
@@ -180,7 +180,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 					res.code = 500;
 					res.parameter = "unsupported format";
 					slave.send(res);
-					return true;
+					return false;
 				}
 				passwordB64.append(slave.buf, recvLen);
 			} while (
@@ -238,7 +238,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 			res.parameter = "OK";
 			slave.send(res);
 		} else if (req.verb == "RSET") {
-			slave.authenticated = bool();
+			slave.authenticated = false;
 			slave.mailFrom = std::string();
 			slave.data = std::string();
 			slave.rcptTo = std::set<std::string>();
@@ -286,7 +286,7 @@ int main(int argc, const char *argv[]) {
 
 	// Run server.
 	Server server;
-	server.serve(Rain::Networking::Host("localhost", port), false);
+	server.serve(Rain::Networking::Host("*", port), false);
 	std::cout << "Serving on port " << server.getService().getCStr() << ".\n";
 	std::string command;
 	while (command != "exit") {

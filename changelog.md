@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.3
+
+* Small bugfix to use `*` binding address rather than `localhost`.
+
 ## 2.2.2
 
 * Fix `make noinc`.
