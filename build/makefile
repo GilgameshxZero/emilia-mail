@@ -57,7 +57,7 @@ run: $(VERSION_BUILD_INCLUDE) $(EMILIA_MAIL_BIN)
 
 # Compile with incrementing build nor running.
 .PHONY: noinc
-noinc: $(VERSION_BUILD_INCLUDE) $(EMILIA_MAIL_BIN)
+noinc: $(EMILIA_MAIL_BIN)
 
 # Rules for emilia-mail binaries and objects.
 $(BIN_DIR)%: $(OBJ_DIR)$(BIN_NAME)/%.o $(EMILIA_MAIL_OBJ)

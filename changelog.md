@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.2
+
+* Fix `make noinc`.
+* Don't sort `using` in `.clang-format`.
+* Use `rain v6.4.0`.
+
 ## 2.2.1
 
 * Return `450` temporary failure codes instead of permanent `554`s.
