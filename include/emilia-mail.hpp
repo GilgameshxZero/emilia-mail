@@ -2,7 +2,7 @@
 
 #define EMILIA_MAIL_VERSION_MAJOR 2
 #define EMILIA_MAIL_VERSION_MINOR 2
-#define EMILIA_MAIL_VERSION_REVISION 3
+#define EMILIA_MAIL_VERSION_REVISION 4
 
 #include "build.hpp"
 
@@ -18,10 +18,14 @@ class Slave : public Rain::Networking::Smtp::Slave {
 	std::set<std::string> rcptTo;
 
 	Slave(Rain::Networking::Socket &socket,
+		std::size_t BUF_SZ = 16384,
 		const std::chrono::milliseconds &RECV_TIMEOUT_MS =
-			std::chrono::milliseconds(1000),
-		std::size_t BUF_SZ = 16384);
-		~Slave();
+			std::chrono::milliseconds(5000),
+		const std::chrono::milliseconds &SEND_MS_PER_KB = std::chrono::milliseconds(
+			5000),
+		const std::chrono::milliseconds &SEND_TIMEOUT_MS_LOWER =
+			std::chrono::milliseconds(5000));
+	~Slave();
 };
 
 class Server : public Rain::Networking::Smtp::Server<Slave> {

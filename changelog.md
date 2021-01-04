@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.4
+
+* Use new `send` functions introduced in `rain 6.4.2`.
+* Serve on `localhost` again with the new `Node` implementation.
+
 ## 2.2.3
 
 * Small bugfix to use `*` binding address rather than `localhost`.

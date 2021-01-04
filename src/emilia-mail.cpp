@@ -17,14 +17,29 @@ std::function<std::string(const std::string &)> extractEmailDomain =
 	};
 
 Slave::Slave(Rain::Networking::Socket &socket,
+	std::size_t BUF_SZ,
 	const std::chrono::milliseconds &RECV_TIMEOUT_MS,
-	std::size_t BUF_SZ)
+	const std::chrono::milliseconds &SEND_MS_PER_KB,
+	const std::chrono::milliseconds &SEND_TIMEOUT_MS_LOWER)
 		: Rain::Networking::Socket(std::move(socket)),
 			Rain::Networking::RequestResponse::Socket<Rain::Networking::Smtp::Request,
-				Rain::Networking::Smtp::Response>(socket, RECV_TIMEOUT_MS, BUF_SZ),
-			Rain::Networking::Smtp::Socket(socket, RECV_TIMEOUT_MS, BUF_SZ),
-			Rain::Networking::Smtp::Slave(socket, RECV_TIMEOUT_MS, BUF_SZ) {
-	this->buf = new char[this->BUF_SZ];
+				Rain::Networking::Smtp::Response>(socket,
+				BUF_SZ,
+				RECV_TIMEOUT_MS,
+				SEND_MS_PER_KB,
+				SEND_TIMEOUT_MS_LOWER),
+			Rain::Networking::Smtp::Socket(socket,
+				BUF_SZ,
+				RECV_TIMEOUT_MS,
+				SEND_MS_PER_KB,
+				SEND_TIMEOUT_MS_LOWER),
+			Rain::Networking::Smtp::Slave(socket,
+				BUF_SZ,
+				RECV_TIMEOUT_MS,
+				SEND_MS_PER_KB,
+				SEND_TIMEOUT_MS_LOWER),
+			buf(new char[Slave::BUF_SZ]),
+			authenticated(false) {
 	Rain::Networking::Smtp::Response res(220, "emilia ready");
 	this->send(res);
 }
@@ -71,10 +86,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 			// Receive data.
 			std::size_t kmpCand = 0, recvLen;
 			do {
-				recvLen = slave.recv(slave.buf,
-					slave.BUF_SZ,
-					Rain::Networking::Socket::RecvFlag::NONE,
-					slave.RECV_TIMEOUT_MS);
+				recvLen = slave.recv(slave.buf, slave.BUF_SZ);
 				if (recvLen == 0) {	 // Unintended exit.
 					res.code = 500;
 					res.parameter = "unsupported format";
@@ -122,8 +134,10 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 				res.parameter = "emilia failed to relay email data, please try again";
 				slave.send(res);
 
-				std::string filename = std::to_string(
-					std::chrono::steady_clock::now().time_since_epoch().count()) + ".txt";
+				std::string filename =
+					std::to_string(
+						std::chrono::steady_clock::now().time_since_epoch().count()) +
+					".txt";
 				std::ofstream out(filename, std::ios::binary);
 				out.write(slave.data.c_str(), slave.data.length());
 				out.close();
@@ -149,10 +163,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 			std::size_t kmpCand = 0, recvLen;
 			std::string usernameB64, passwordB64;
 			do {
-				recvLen = slave.recv(slave.buf,
-					slave.BUF_SZ,
-					Rain::Networking::Socket::RecvFlag::NONE,
-					slave.RECV_TIMEOUT_MS);
+				recvLen = slave.recv(slave.buf, slave.BUF_SZ);
 				if (recvLen == 0) {	 // Unintended exit.
 					res.code = 500;
 					res.parameter = "unsupported format";
@@ -172,10 +183,7 @@ bool Server::onRequest(Slave &slave, Request &req) noexcept {
 			slave.send(res);
 			kmpCand = 0;
 			do {
-				recvLen = slave.recv(slave.buf,
-					slave.BUF_SZ,
-					Rain::Networking::Socket::RecvFlag::NONE,
-					slave.RECV_TIMEOUT_MS);
+				recvLen = slave.recv(slave.buf, slave.BUF_SZ);
 				if (recvLen == 0) {	 // Unintended exit.
 					res.code = 500;
 					res.parameter = "unsupported format";
@@ -286,7 +294,7 @@ int main(int argc, const char *argv[]) {
 
 	// Run server.
 	Server server;
-	server.serve(Rain::Networking::Host("*", port), false);
+	server.serve(Rain::Networking::Host("localhost", port), false);
 	std::cout << "Serving on port " << server.getService().getCStr() << ".\n";
 	std::string command;
 	while (command != "exit") {
