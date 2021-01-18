@@ -58,7 +58,7 @@ run: $(BIN_NAME)
 
 # Compile without incrementing build.
 .PHONY: noinc
-noinc: $(EMILIA_WEB_BIN)
+noinc: $(EMILIA_MAIL_BIN)
 
 # Rules for emilia-mail binaries and objects.
 $(BIN_DIR)%: $(OBJ_DIR)%.o $(EMILIA_MAIL_OBJ)

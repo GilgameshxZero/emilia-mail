@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.6
+
+* Fix `WEB` -> `MAIL` typo in makefile.
+
 ## 2.2.5
 
 * Revamp `makefile` to pass correct linker and compiler flags.
