@@ -17,9 +17,9 @@ RAIN_INCLUDES := $(shell find $(RAIN_INCLUDE_DIR) -name *.hpp)
 EMILIA_MAIL_INCLUDES := $(filter-out $(VERSION_BUILD_INCLUDE), \
 	$(wildcard $(INCLUDE_DIR)*.hpp))
 EMILIA_MAIL_SRCS := $(wildcard $(SRC_DIR)*.cpp)
-EMILIA_MAIL_NAMES := $(basename $(notdir $(EMILIA_MAIL_SRC)))
+EMILIA_MAIL_NAMES := $(basename $(notdir $(EMILIA_MAIL_SRCS)))
 EMILIA_MAIL_OBJS := $(addsuffix .o, \
-	$(addprefix $(OBJ_DIR), $(EMILIA_MAIL_NAME)))
+	$(addprefix $(OBJ_DIR), $(EMILIA_MAIL_NAMES)))
 EMILIA_MAIL_BIN := $(BIN_DIR)$(BIN_NAME)
 
 # Flags for build. Debug by default.
@@ -43,7 +43,7 @@ else
 endif
 
 # Object files should not be deleted to not recompile under no changes.
-.SECONDARY: $(EMILIA_MAIL_OBJ) $(EMILIA_MAIL_BIN)
+.SECONDARY: $(EMILIA_MAIL_OBJS) $(EMILIA_MAIL_BIN)
 
 # Mark .PHONY for rules to avoid compiling files named the same as rules.
 
@@ -61,12 +61,12 @@ run: $(BIN_NAME)
 noinc: $(EMILIA_MAIL_BIN)
 
 # Rules for emilia-mail binaries and objects.
-$(BIN_DIR)%: $(OBJ_DIR)%.o $(EMILIA_MAIL_OBJ)
+$(BIN_DIR)%: $(OBJ_DIR)%.o $(EMILIA_MAIL_OBJS)
 	@mkdir -p $(@D)
-	$(CXX) -o $@ $< $(CXXFLAG)
-$(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(EMILIA_MAIL_INCLUDE) $(RAIN_INCLUDE)
+	$(CXX) $(CXXFLAGS) $(LDLIBS) $< -o $@
+$(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(EMILIA_MAIL_INCLUDES) $(RAIN_INCLUDES)
 	@mkdir -p $(@D)
-	$(CXX) -c -o $@ $< $(CXXFLAG)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Delete compile-time files.
 .PHONY: clean
@@ -74,7 +74,7 @@ clean:
 	@rm -rf $(OBJ_DIR) $(BIN_DIR)
 
 # Increment build number.
-$(VERSION_BUILD_INCLUDE): $(EMILIA_MAIL_INCLUDE) $(EMILIA_MAIL_SRC) $(RAIN_INCLUDE)
+$(VERSION_BUILD_INCLUDE): $(EMILIA_MAIL_INCLUDES) $(EMILIA_MAIL_SRCS) $(RAIN_INCLUDES)
 	@read line < $(VERSION_BUILD_INCLUDE); \
 	TOKENS=($$line); \
 	VERSION_BUILD=$$(($${TOKENS[2]} + 1)); \

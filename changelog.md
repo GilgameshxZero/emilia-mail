@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.7
+
+* Additional typo fixes in `makefile`.
+
 ## 2.2.6
 
 * Fix `WEB` -> `MAIL` typo in makefile.
