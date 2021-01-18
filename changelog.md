@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.5
+
+* Revamp `makefile` to pass correct linker and compiler flags.
+* Setup Visual Studio Code debugging workflows.
+
 ## 2.2.4
 
 * Use new `send` functions introduced in `rain 6.4.2`.
