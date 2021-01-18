@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.9
+
+* Remove `.vscode` from `.gitignore`.
+
 ## 2.2.8
 
 * Additional small fixes in include paths and versioning.
