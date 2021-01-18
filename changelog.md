@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.8
+
+* Additional small fixes in include paths and versioning.
+
 ## 2.2.7
 
 * Additional typo fixes in `makefile`.
