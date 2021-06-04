@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.11
+
+* Update VSCode task to create `bin` and `obj` directories correctly upon Windows build.
+
 ## 2.2.10
 
 * Makefile now links libraries after objects as intended.
