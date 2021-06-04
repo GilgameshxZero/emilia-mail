@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.10
+
+* Makefile now links libraries after objects as intended.
+
 ## 2.2.9
 
 * Remove `.vscode` from `.gitignore`.

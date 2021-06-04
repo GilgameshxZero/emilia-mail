@@ -63,7 +63,7 @@ noinc: $(EMILIA_MAIL_BIN)
 # Rules for emilia-mail binaries and objects.
 $(BIN_DIR)%: $(OBJ_DIR)%.o $(EMILIA_MAIL_OBJS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(LDLIBS) $< -o $@
+	$(CXX) $(CXXFLAGS) $< $(LDLIBS) -o $@
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(EMILIA_MAIL_INCLUDES) $(RAIN_INCLUDES)
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
