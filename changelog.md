@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.12
+
+* Patch the hosting node from `"localhost"` to `""` to match `rain v.6.5.4` standards.
+
 ## 2.2.11
 
 * Update VSCode task to create `bin` and `obj` directories correctly upon Windows build.
